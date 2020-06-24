@@ -1,5 +1,5 @@
 var DbManager = require("./dbManager")
-var mosca = require('mosca');
+var mqtt = require('mqtt');
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var settings = require('../appsettings');
@@ -8,7 +8,7 @@ module.exports = class Server{
   constructor(){
     this.dbManager = new DbManager();
     this.scanners = [];
-    this.server = new mosca.Server(settings.serverSettings);
+    this.mqttClient = mqtt.connect(settings.mqttBrokerUrl);
     this.webServer = http.createServer(function(request, response) {
       console.log((new Date()) + 'Web server received request for ' + request.url);
       response.writeHead(200, {'Content-Type':'text/plain'});
@@ -26,22 +26,16 @@ module.exports = class Server{
 
   startServer(){    
     var self = this;
-    this.server.on('ready', function() {
-      console.log(Date() + ' Server is running...');
-    });
-    
-    this.server.on('clientConnected', function(client) {
-      console.log(Date() + ' ' + client.id + ' connected');
-    });
-    
-    this.server.on('clientDisconnected', function(client) {
-      console.log(Date() + ' ' + client.id + ' disconnected');
-    });
+    this.mqttClient.on('connect', function() {
+      console.log(Date() + ' Server connected to mqtt broker');
 
-    this.server.on('published', function(packet, client) {
-      if(client && packet.topic){
-        self.dbManager.insertData(JSON.parse(packet.payload));
-      }    
+      self.mqttClient.subscribe(settings.rooms, function(err){
+        if (!err) {
+          self.mqttClient.on('message', function (topic, message){
+            self.dbManager.insertData(JSON.parse(message.toString()));
+          });
+        }
+      });      
     });
     
     this.webServer.listen(8080, function() {
@@ -50,7 +44,7 @@ module.exports = class Server{
 
     this.socketServer.on('request', function(request) {
       var connection = request.accept();
-      console.log((new Date()) + ' Connection accepted.');
+      console.log((new Date()) + ' Client connection accepted.');
 
       setInterval(function() {
         self.dbManager.getData().then(function(promises) {        

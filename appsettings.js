@@ -82,12 +82,13 @@ module.exports = {
   scannerValues: scannerValues,
 
   webUrl: 'ws://127.0.0.1:8080/',
-  msqttUrl: 'mqtt://127.0.0.1/',
+  mqttUrl: 'mqtt://127.0.0.1/',
+  mqttBrokerUrl: 'mqtt://test.mosquitto.org',
   dbUrl: 'mongodb://localhost:27017/',
   dbName: 'IoT-DB',
   datasetSize: 10,
   peopleLimit: 2,
-  personRefreshMs: 15000,
+  personRefreshMs: 10000,
   dataRefreshMs: 5000,
   entranceTopic: entranceTopic,
   exitTopic: exitTopic,
@@ -95,6 +96,7 @@ module.exports = {
   firstFloorBathTopic: firstFloorBathTopic,
   secondFloorOfficeTopic: secondFloorOfficeTopic,
   secondFloorBathTopic: secondFloorBathTopic,
+  rooms: [entranceTopic, exitTopic, firstFloorBathTopic, firstFloorOfficeTopic, secondFloorBathTopic, secondFloorOfficeTopic],
 
   serverSettings: {
     port: 1900

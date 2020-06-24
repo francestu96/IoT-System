@@ -17,17 +17,17 @@ module.exports = class BLEscanner{
   startScanner(){
     var self = this;
     var scanner = new mosca.Server(this.clientSettings);
-    var serverConnection = mqtt.connect(settings.msqttUrl, { port: settings.serverSettings, clientId: this.clientId });
-    serverConnection.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: 0, date: Date.now(), port: self.clientSettings.port }));
+    var mqttClient = mqtt.connect(settings.mqttBrokerUrl, { clientId: this.clientId });
+    mqttClient.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: 0, date: Date.now(), port: self.clientSettings.port }));
 
     scanner.on('ready', function() {
       console.log(Date() + ' ' + self.clientId + ': ' + self.topic + ' is running...');
     });
-    scanner.on('clientDisconnected', function(client) {
-      serverConnection.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: (self.people ? --self.people : 0), date: Date.now() }));
+    scanner.on('clientDisconnected', function() {
+      mqttClient.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: (self.people ? --self.people : 0), date: Date.now() }));
     });
-    scanner.on('clientConnected', function(client) {
-      serverConnection.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: (++self.people), date: Date.now() }));
+    scanner.on('clientConnected', function() {
+      mqttClient.publish(self.topic, JSON.stringify({ clientId: self.clientId, topic: self.topic, topicDesc: self.topicDesc, people: (++self.people), date: Date.now() }));
     });
   }
 }
