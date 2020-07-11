@@ -1,4 +1,4 @@
-import { Component, Input, } from '@angular/core';
+import { Component, Input, Output, EventEmitter, } from '@angular/core';
 import { DataModel } from './models/DataModel';
 import { DatasetModel } from './models/DatasetModel';
 import * as moment from 'moment';
@@ -9,6 +9,9 @@ import * as moment from 'moment';
   styleUrls: ['./app.component.scss']
 })
 export class RealTimeComponent {
+  @Output()
+  refreshTimeEmitter: EventEmitter<number> = new EventEmitter();
+
   @Input()
   private peopleLimit: number;
   @Input()

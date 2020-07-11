@@ -1,5 +1,6 @@
-<div style="display: block">
+<div  style="display: block;">
   <canvas baseChart
+      height="100"
       [chartType]="chartType"
       [datasets]="chartDatasets"
       [labels]="chartLabels"
@@ -8,3 +9,15 @@
       [legend]="true">
   </canvas>
 </div>
+<br>
+<div style="text-align: center;">
+  <mat-button-toggle-group style="margin: 15px;" name="fontStyle" aria-label="Font Style" value="5">
+    <mat-button-toggle (change)="refreshTimeEmitter.emit($event.value)" value="2">2s</mat-button-toggle>
+    <mat-button-toggle (change)="refreshTimeEmitter.emit($event.value)" value="5">5s</mat-button-toggle>
+    <mat-button-toggle (change)="refreshTimeEmitter.emit($event.value)" value="10">10s</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+<div style="text-align: center;">
+  Refresh time(s)
+</div>
+

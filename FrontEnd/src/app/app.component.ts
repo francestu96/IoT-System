@@ -21,4 +21,10 @@ export class AppComponent implements OnInit {
       this.lastData = x;
     });
   }
+
+  changeRefreshTime(seconds: number){
+    var model = new DataModel();
+    model.people = seconds;
+    this.socket.next([model]);
+  }
 }

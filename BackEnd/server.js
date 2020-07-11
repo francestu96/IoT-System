@@ -6,6 +6,7 @@ var settings = require('../appsettings');
 
 module.exports = class Server{
   constructor(){
+    this.refreshTimeSeconds = 2;
     this.dbManager = new DbManager();
     this.scanners = [];
     this.mqttClient = mqtt.connect(settings.mqttBrokerUrl);
@@ -46,17 +47,26 @@ module.exports = class Server{
       var connection = request.accept();
       console.log((new Date()) + ' Client connection accepted.');
 
-      setInterval(function() {
-        self.dbManager.getData().then(function(promises) {        
-          Promise.all(promises).then(function(res) {
-            connection.send(JSON.stringify(res.map(x => { return { clientId: x.clientId, people: x.people, topicDesc: x.topicDesc, date: x.date}})));
-          });
-        });
-      }, settings.dataRefreshMs);
+      var timer = setInterval(function(){ self.sendData(self.dbManager, connection) }, 5000);
+
+      connection.on('message', function(message) {
+        if (message.type === 'utf8') {
+            clearInterval(timer); 
+            timer = setInterval(function(){ self.sendData(self.dbManager, connection) }, parseInt(JSON.parse(message.utf8Data)[0].people) * 1000);
+          }
+      });
 
       connection.on('close', function() {
           console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
       });
     });
+  }
+
+  sendData(dbManager, connection) {
+    dbManager.getData().then(function(promises) {          
+      Promise.all(promises).then(function(res) {
+        connection.send(JSON.stringify(res.map(x => { return { clientId: x.clientId, people: x.people, topicDesc: x.topicDesc, date: x.date}})));
+      });
+    });  
   }
 }

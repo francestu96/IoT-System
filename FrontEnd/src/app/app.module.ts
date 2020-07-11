@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { ChartsModule } from 'ng2-charts';
 import { AppComponent } from './app.component';
 import { RealTimeComponent } from './realTime.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -11,7 +13,9 @@ import { RealTimeComponent } from './realTime.component';
   ],
   imports: [
     BrowserModule,
-    ChartsModule
+    ChartsModule,
+    MatButtonToggleModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
