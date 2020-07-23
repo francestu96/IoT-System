@@ -3,6 +3,7 @@ var mqtt = require('mqtt');
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 var settings = require('../appsettings');
+const { memoryUsage } = require("process");
 
 module.exports = class Server{
   constructor(){

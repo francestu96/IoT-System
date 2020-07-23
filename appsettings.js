@@ -4,6 +4,7 @@ const firstFloorOfficeTopic = "firstFloor/office";
 const firstFloorBathTopic = "firstFloor/bath";
 const secondFloorOfficeTopic = "secondFloor/office";
 const secondFloorBathTopic = "secondFloor/bath";
+const mobileTopic = "mobile";
 
 const dbEmittersCollection = 'emitters';
 const dbDataCollection = 'data';
@@ -96,7 +97,7 @@ module.exports = {
   firstFloorBathTopic: firstFloorBathTopic,
   secondFloorOfficeTopic: secondFloorOfficeTopic,
   secondFloorBathTopic: secondFloorBathTopic,
-  rooms: [entranceTopic, exitTopic, firstFloorBathTopic, firstFloorOfficeTopic, secondFloorBathTopic, secondFloorOfficeTopic],
+  rooms: [mobileTopic, entranceTopic, exitTopic, firstFloorBathTopic, firstFloorOfficeTopic, secondFloorBathTopic, secondFloorOfficeTopic],
 
   serverSettings: {
     port: 1900
